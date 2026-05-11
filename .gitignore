@@ -1,0 +1,17 @@
+node_modules/
+dist/
+outputs/
+*.xpi
+*.log
+.env
+.tmp/
+.playwright-mcp/
+
+# Local Zotero profile data should never be committed.
+zotero-profile/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,24 @@
+{
+  "name": "zotero-notebooklm-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zotero 9 plugin and local helper for preparing papers for NotebookLM import.",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:xpi",
+    "build:xpi": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-xpi.ps1",
+    "check": "npm run check:helper && npm run build:xpi",
+    "check:helper": "node --test helper/test/*.test.js",
+    "helper": "node helper/src/cli.js",
+    "github:init": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/create-github-repo.ps1"
+  },
+  "keywords": [
+    "zotero",
+    "notebooklm",
+    "xpi",
+    "papers"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {}
+}

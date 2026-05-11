@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "Zotero NotebookLM Bridge",
+  "version": "0.1.0",
+  "description": "Prepare Zotero papers for NotebookLM import.",
+  "applications": {
+    "zotero": {
+      "id": "zotero-notebooklm-bridge@example.local",
+      "strict_min_version": "9.0",
+      "strict_max_version": "9.0.*"
+    }
+  }
+}

@@ -50,6 +50,8 @@ npm run build:xpi
 
 构建结果在 `dist/zotero-notebooklm-bridge.xpi`。开发时可在 Zotero 的 Add-ons 页面中通过 “Install Add-on From File...” 安装该 XPI。
 
+当前 XPI 参考 Awesome GPT 的发行包结构，顶层同时包含 `manifest.json`、`install.rdf` 和 `chrome.manifest`。
+
 ## 当前能力
 
 - 已有 Zotero 插件侧边栏入口。

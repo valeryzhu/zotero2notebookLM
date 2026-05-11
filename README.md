@@ -37,11 +37,22 @@ npm run build:xpi
 ## 插件基础功能
 
 - 打开 Zotero 侧边栏入口 `NotebookLM Bridge`。
+- 在 collection 右键菜单中点击 `导出到 NotebookLM...`。
 - 来源支持当前选中条目、当前 collection、本地目录。
 - 扫描并导出 PDF 附件。
 - 导出 Zotero notes 为纯文本。
 - 本地目录支持 `.pdf`、`.txt`、`.md`、`.markdown`、`.html`、`.htm`。
 - 输出 NotebookLM 导入包，包含 `pdf/`、`notes/`、`manifest.json`、`manifest.csv`、`README.md`。
+
+## NotebookLM 直导
+
+NotebookLM 直导通过本机外部 CLI 完成，插件不保存 Google 账号。先安装并登录一个 `nlm` CLI，然后运行：
+
+```powershell
+node .\helper\src\cli.js notebooklm-import --input "D:\NotebookLM导入包\CRISPRa" --name "CRISPRa" --cli nlm
+```
+
+CLI 会按目录名或 `--name` 创建 NotebookLM notebook，并把目录内支持的 PDF 和 notes 逐个加入。
 
 ## 账号策略
 
@@ -49,6 +60,6 @@ npm run build:xpi
 
 ## 尚未实现
 
-- NotebookLM 网页自动化上传。
+- 直接从插件进程启动外部 NotebookLM CLI。
 - DOI/标题/作者的深度元数据提取和去重策略。
 - 直接创建或选择 NotebookLM notebook。

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Zotero NotebookLM Bridge",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Prepare Zotero papers for NotebookLM import.",
   "homepage_url": "https://github.com/valeryzhu/zotero2notebookLM",
   "author": "Valery Zhu",

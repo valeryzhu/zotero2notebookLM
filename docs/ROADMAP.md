@@ -18,6 +18,7 @@
 - [x] 导出 Zotero notes 为文本文件。
 - [x] 从本地目录递归导出 PDF 和 note-like 文件。
 - [x] 从 Zotero items 导出 NotebookLM manifest。
+- [x] Collection 右键菜单入口。
 - [ ] 导入 PDF 到指定 collection。
 - [ ] 调用 Zotero metadata retrieval。
 
@@ -34,6 +35,7 @@
 ## v0.4 NotebookLM 自动化
 
 - [ ] 不在插件中保存 Google 密码，仅复用浏览器登录态。
+- [x] Helper 调用外部 `nlm` CLI 创建 notebook 并导入目录文件。
 - [ ] Playwright 登录状态复用。
 - [ ] 打开指定 NotebookLM notebook。
 - [ ] 批量上传 PDF。

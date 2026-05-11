@@ -17,7 +17,8 @@
 - 在 `bootstrap.js` 中通过 `amIAddonManagerStartup.registerChrome()` 注册 `content zotero2notebooklm chrome/content/`。
 - Zotero 9.0.3 实测：本项目 XPI 不带 `applications.zotero.update_url` 时，Add-on Manager 会在临时 profile 中忽略该 XPI，手动安装时表现为“不兼容/无法安装”。加入 `update_url` 后，同一包可进入 `extensions.json` 且 `appDisabled=false`。
 - `manifest.json` 当前使用 `strict_min_version=6.999`、`strict_max_version=10.*`，并带 `update_url=https://raw.githubusercontent.com/valeryzhu/zotero2notebookLM/main/updates.json`。
-- v0.1.3 已在 Zotero 插件内实现基础导出包：来源为 selection、collection 或本地目录；输出 `pdf/`、`notes/`、`manifest.json`、`manifest.csv`、`README.md`。
+- v0.1.4 已在 Zotero 插件内实现基础导出包：来源为 selection、collection 或本地目录；输出 `pdf/`、`notes/`、`manifest.json`、`manifest.csv`、`README.md`。
+- v0.1.4 在 Zotero collection 右键菜单加入 `导出到 NotebookLM...` 入口，并新增 helper 命令 `notebooklm-import`，用于调用本机 `nlm` CLI 创建同名 NotebookLM notebook 并导入目录内文件。
 - 插件导出 Zotero notes 时先转成纯文本；NotebookLM 网页自动化暂不放进 Zotero 插件进程，后续通过本地 helper 或独立 Playwright 脚本接入。
 - 不在 Zotero 插件内收集或保存 Google 账号密码。NotebookLM 登录交给浏览器自身登录态或系统浏览器 profile。
 

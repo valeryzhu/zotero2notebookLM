@@ -38,6 +38,7 @@ Zotero 9.0.3 本地实测需要 `manifest.json` 中包含：
 
 ```powershell
 node .\helper\src\cli.js prepare --input .\samples\input --output .\outputs\notebooklm-import
+node .\helper\src\cli.js notebooklm-import --input .\outputs\notebooklm-import --name CRISPRa --cli nlm
 ```
 
 当前支持的输入文件：
@@ -56,4 +57,21 @@ outputs/notebooklm-import/
   manifest.json
   pdf/
   notes/
+```
+
+## NotebookLM CLI 直导
+
+`notebooklm-import` 不保存 Google 账号，依赖本机已经安装并登录的 `nlm` 命令。
+
+默认命令方言按 `tmc/nlm` 风格生成：
+
+```powershell
+nlm create "CRISPRa"
+nlm add <notebook-id> <file>
+```
+
+如使用 `notebooklm-mcp-cli` 风格，可加：
+
+```powershell
+node .\helper\src\cli.js notebooklm-import --input .\outputs\notebooklm-import --name CRISPRa --dialect mcp
 ```

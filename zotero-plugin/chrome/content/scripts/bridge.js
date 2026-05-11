@@ -4,6 +4,8 @@ var ZoteroNotebookLMBridgePlugin = class {
     this.version = version;
     this.rootURI = rootURI;
     this.menuItemID = "zotero-notebooklm-bridge-menu-item";
+    this.collectionMenuItemID = "zotero-notebooklm-bridge-collection-menu-item";
+    this.collectionMenuSeparatorID = "zotero-notebooklm-bridge-collection-menu-separator";
     this.sidebarID = "zotero-notebooklm-bridge-sidebar";
     this.styleID = "zotero-notebooklm-bridge-style";
     this.windowMenus = new WeakMap();
@@ -46,12 +48,24 @@ var ZoteroNotebookLMBridgePlugin = class {
       menu.appendChild(item);
       this.windowMenus.set(win, item);
     }
+
+    this.addCollectionContextMenu(win);
   }
 
   removeFromWindow(win) {
     const item = this.windowMenus.get(win) || win.document?.getElementById(this.menuItemID);
     if (item) {
       item.remove();
+    }
+
+    const collectionMenuItem = win.document?.getElementById(this.collectionMenuItemID);
+    if (collectionMenuItem) {
+      collectionMenuItem.remove();
+    }
+
+    const collectionMenuSeparator = win.document?.getElementById(this.collectionMenuSeparatorID);
+    if (collectionMenuSeparator) {
+      collectionMenuSeparator.remove();
     }
 
     const sidebar = this.windowSidebars.get(win) || win.document?.getElementById(this.sidebarID);
@@ -67,6 +81,43 @@ var ZoteroNotebookLMBridgePlugin = class {
     this.windowMenus.delete(win);
     this.windowSidebars.delete(win);
     this.windowState.delete(win);
+  }
+
+  addCollectionContextMenu(win) {
+    const doc = win.document;
+    const menu = doc.getElementById("zotero-collectionmenu");
+    if (!menu || doc.getElementById(this.collectionMenuItemID)) {
+      return;
+    }
+
+    const separator = doc.createXULElement("menuseparator");
+    separator.id = this.collectionMenuSeparatorID;
+    const item = doc.createXULElement("menuitem");
+    item.id = this.collectionMenuItemID;
+    item.setAttribute("label", "导出到 NotebookLM...");
+    item.addEventListener("command", async () => {
+      await this.openForCollection(win);
+    });
+    menu.appendChild(separator);
+    menu.appendChild(item);
+    const refreshVisibility = () => {
+      const collection = (win.ZoteroPane || Zotero.getActiveZoteroPane?.())?.getSelectedCollection?.();
+      const hidden = !collection;
+      separator.hidden = hidden;
+      item.hidden = hidden;
+    };
+    menu.addEventListener("popupshowing", refreshVisibility);
+    menu.addEventListener("popupshown", refreshVisibility);
+  }
+
+  async openForCollection(win) {
+    this.toggleSidebar(win);
+    const sidebar = win.document.getElementById(this.sidebarID);
+    if (sidebar) {
+      sidebar.hidden = false;
+      await this.setSourceMode(win, "collection");
+      this.setStatus(win, "Collection selected. Choose output, then export or run NotebookLM CLI.");
+    }
   }
 
   toggleSidebar(win) {
@@ -115,6 +166,7 @@ var ZoteroNotebookLMBridgePlugin = class {
       this.html(doc, "button", { "data-action": "choose-folder" }, "Choose Local Folder"),
       this.html(doc, "button", { "data-action": "choose-output" }, "Choose Output"),
       this.html(doc, "button", { "data-action": "export-package" }, "Export Package"),
+      this.html(doc, "button", { "data-action": "show-cli-command" }, "NotebookLM CLI"),
       this.html(doc, "button", { "data-action": "open-notebooklm" }, "Open NotebookLM")
     ]));
 
@@ -131,6 +183,11 @@ var ZoteroNotebookLMBridgePlugin = class {
     sidebar.appendChild(this.section(doc, "Paths", [
       this.html(doc, "div", { class: "znlm-path", "data-role": "input-path" }, "Input folder: not selected"),
       this.html(doc, "div", { class: "znlm-path", "data-role": "output-path" }, "Output folder: not selected")
+    ]));
+
+    sidebar.appendChild(this.section(doc, "NotebookLM CLI", [
+      this.html(doc, "p", { class: "znlm-copy" }, "Run this after export to create a same-name NotebookLM notebook and upload all package files."),
+      this.html(doc, "pre", { "data-role": "cli-command" }, "Export a package first.")
     ]));
 
     sidebar.appendChild(this.section(doc, "Report", this.html(doc, "ul", {
@@ -315,6 +372,11 @@ var ZoteroNotebookLMBridgePlugin = class {
 
     if (target.dataset.action === "export-package") {
       await this.exportPackage(win);
+      return;
+    }
+
+    if (target.dataset.action === "show-cli-command") {
+      this.showNotebookLMCommand(win);
       return;
     }
 
@@ -637,8 +699,14 @@ var ZoteroNotebookLMBridgePlugin = class {
       }
 
       this.setStatus(win, "Writing NotebookLM import package...");
-      const result = await this.writeImportPackage(state.outputFolderPath, sources, mode);
+      const notebookName = this.getNotebookNameForWindow(win, mode);
+      const result = await this.writeImportPackage(state.outputFolderPath, sources, mode, notebookName);
       this.setStatus(win, `Exported ${result.entries.length} file(s) to ${result.outputDir}`);
+      this.setWindowState(win, {
+        lastExportDir: result.outputDir,
+        lastNotebookName: result.notebookName
+      });
+      this.updateNotebookLMCommand(win);
       this.renderExportReport(win, result);
     }
     catch (error) {
@@ -648,7 +716,7 @@ var ZoteroNotebookLMBridgePlugin = class {
     }
   }
 
-  async writeImportPackage(outputRootPath, sources, mode) {
+  async writeImportPackage(outputRootPath, sources, mode, notebookName) {
     const outputDir = this.makePackageDirectory(outputRootPath);
     const pdfDir = OS.Path.join(outputDir, "pdf");
     const notesDir = OS.Path.join(outputDir, "notes");
@@ -680,6 +748,7 @@ var ZoteroNotebookLMBridgePlugin = class {
 
     return {
       outputDir,
+      notebookName,
       entries,
       errors,
       manifest
@@ -781,6 +850,30 @@ var ZoteroNotebookLMBridgePlugin = class {
     this.renderLines(win, lines);
   }
 
+  showNotebookLMCommand(win) {
+    this.updateNotebookLMCommand(win);
+    const state = this.getWindowState(win);
+    this.setStatus(win, state.lastExportDir
+      ? "NotebookLM CLI command is ready below."
+      : "Export a package first, then run the NotebookLM CLI command.");
+  }
+
+  updateNotebookLMCommand(win) {
+    const command = win.document.getElementById(this.sidebarID)?.querySelector("[data-role='cli-command']");
+    if (!command) {
+      return;
+    }
+
+    const state = this.getWindowState(win);
+    if (!state.lastExportDir) {
+      command.textContent = "Export a package first.";
+      return;
+    }
+
+    const name = state.lastNotebookName || this.guessTitleFromFileName(state.lastExportDir);
+    command.textContent = `node .\\helper\\src\\cli.js notebooklm-import --input "${state.lastExportDir}" --name "${name}" --cli nlm`;
+  }
+
   renderLines(win, lines) {
     const report = win.document.getElementById(this.sidebarID)?.querySelector("[data-role='report']");
     if (!report) {
@@ -800,6 +893,25 @@ var ZoteroNotebookLMBridgePlugin = class {
       .replace("T", "_")
       .replace("Z", "");
     return OS.Path.join(outputRootPath, `notebooklm-import-${stamp}`);
+  }
+
+  getNotebookNameForWindow(win, mode) {
+    if (mode === "folder") {
+      const state = this.getWindowState(win);
+      if (state?.inputFolderPath) {
+        return this.guessTitleFromFileName(state.inputFolderPath);
+      }
+    }
+    try {
+      const pane = win.ZoteroPane || Zotero.getActiveZoteroPane?.();
+      const collection = pane?.getSelectedCollection?.();
+      if (collection?.name) {
+        return collection.name;
+      }
+    }
+    catch (error) {
+    }
+    return "Zotero NotebookLM Import";
   }
 
   makeManifest(outputDir, mode, entries, errors) {

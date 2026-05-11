@@ -12,7 +12,7 @@
 
 ## 当前架构决策
 
-- Zotero 插件按 Zotero 7+ / 9 兼容目标搭建，使用 `manifest.json`、`bootstrap.js` 和 `chrome/content` 资源。不要把 `strict_max_version` 写死到 `9.0.*`，否则 Zotero 7/8 或 9.1+ 会被直接拒绝安装。
+- Zotero 插件按 Zotero 9.0.3 兼容目标搭建，使用 `manifest.json`、`bootstrap.js` 和主流插件常见的 `chrome/content/` 资源结构。对照用户本机可安装插件后，manifest 使用 `strict_min_version=6.999`、`strict_max_version=9.*`，插件 ID 为 `zotero2notebooklm@valeryzhu.github.io`。
 - helper 使用 Node.js 标准库实现，先不引入依赖，降低安装和打包门槛。
 - helper 输出 `manifest.json`、`manifest.csv`、`README.md`，并复制 PDF 到 `pdf/` 子目录。
 - NotebookLM 网页自动化暂不放进 Zotero 插件进程；后续应通过本地 helper 或独立脚本接 Playwright。

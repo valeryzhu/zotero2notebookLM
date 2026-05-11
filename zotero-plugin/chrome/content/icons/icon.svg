@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Zotero NotebookLM Bridge">
+  <rect width="96" height="96" rx="20" fill="#2563eb"/>
+  <path d="M25 22h30c9 0 16 7 16 16v36H41c-9 0-16-7-16-16V22z" fill="#fff"/>
+  <path d="M36 35h24M36 47h24M36 59h15" fill="none" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+  <path d="M62 62l13 13M75 62L62 75" fill="none" stroke="#0f172a" stroke-width="6" stroke-linecap="round"/>
+</svg>

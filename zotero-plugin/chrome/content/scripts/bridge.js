@@ -15,13 +15,23 @@ var ZoteroNotebookLMBridgePlugin = class {
   }
 
   async shutdown() {
-    for (const win of Services.wm.getEnumerator("navigator:browser")) {
-      this.onMainWindowUnload(win);
-    }
+    this.removeFromAllWindows();
     this.log("Stopped");
   }
 
-  onMainWindowLoad(win) {
+  addToAllWindows() {
+    for (const win of Zotero.getMainWindows()) {
+      this.addToWindow(win);
+    }
+  }
+
+  removeFromAllWindows() {
+    for (const win of Zotero.getMainWindows()) {
+      this.removeFromWindow(win);
+    }
+  }
+
+  addToWindow(win) {
     const doc = win.document;
     const menu = doc.getElementById("menu_ToolsPopup") || doc.getElementById("zotero-tb-sync-menu");
 
@@ -37,7 +47,7 @@ var ZoteroNotebookLMBridgePlugin = class {
     }
   }
 
-  onMainWindowUnload(win) {
+  removeFromWindow(win) {
     const item = this.windowMenus.get(win) || win.document?.getElementById(this.menuItemID);
     if (item) {
       item.remove();

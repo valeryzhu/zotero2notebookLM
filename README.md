@@ -1,6 +1,6 @@
 # Zotero NotebookLM Bridge
 
-这是一个面向 Zotero 7+ / 9 的项目骨架，目标是把本地目录中的 PDF 文献整理成 NotebookLM 友好的导入包，并为后续浏览器自动化上传预留接口。
+这是一个面向 Zotero 9.0.3+ 的项目骨架，目标是把本地目录中的 PDF 文献整理成 NotebookLM 友好的导入包，并为后续浏览器自动化上传预留接口。
 
 当前设计不直接承诺调用 NotebookLM 官方 API，因为目前没有确认到公开、稳定的 NotebookLM 批量导入 API。第一版采用更稳的“两段式”流程：
 
@@ -9,7 +9,7 @@
 
 ## 目录结构
 
-- `zotero-plugin/`：Zotero 7+ / 9 XPI 插件源码，包含侧边栏 UI。
+- `zotero-plugin/`：Zotero 9.0.3+ XPI 插件源码，包含侧边栏 UI。
 - `helper/`：本地 Node.js CLI helper，支持 PDF、TXT、Markdown、HTML。
 - `scripts/`：打包 XPI、创建 GitHub 仓库等脚本。
 - `docs/`：项目记忆、路线图和开发说明。

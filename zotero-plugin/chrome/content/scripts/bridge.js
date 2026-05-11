@@ -167,6 +167,7 @@ var ZoteroNotebookLMBridgePlugin = class {
       this.html(doc, "button", { "data-action": "choose-output" }, "Choose Output"),
       this.html(doc, "button", { "data-action": "export-package" }, "Export Package"),
       this.html(doc, "button", { "data-action": "show-cli-command" }, "NotebookLM CLI"),
+      this.html(doc, "button", { "data-action": "run-cli-script" }, "Run CLI Script"),
       this.html(doc, "button", { "data-action": "open-notebooklm" }, "Open NotebookLM")
     ]));
 
@@ -377,6 +378,11 @@ var ZoteroNotebookLMBridgePlugin = class {
 
     if (target.dataset.action === "show-cli-command") {
       this.showNotebookLMCommand(win);
+      return;
+    }
+
+    if (target.dataset.action === "run-cli-script") {
+      await this.runNotebookLMScript(win);
       return;
     }
 
@@ -745,6 +751,7 @@ var ZoteroNotebookLMBridgePlugin = class {
     await Zotero.File.putContentsAsync(OS.Path.join(outputDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
     await Zotero.File.putContentsAsync(OS.Path.join(outputDir, "manifest.csv"), this.toCsv(entries));
     await Zotero.File.putContentsAsync(OS.Path.join(outputDir, "README.md"), this.makeReadme(entries, errors));
+    await Zotero.File.putContentsAsync(OS.Path.join(outputDir, "run-notebooklm-import.ps1"), this.makeNotebookLMImportScript(outputDir, notebookName));
 
     return {
       outputDir,
@@ -858,6 +865,47 @@ var ZoteroNotebookLMBridgePlugin = class {
       : "Export a package first, then run the NotebookLM CLI command.");
   }
 
+  async runNotebookLMScript(win) {
+    const state = this.getWindowState(win);
+    if (!state.lastExportDir) {
+      this.setStatus(win, "Export a package first.");
+      return;
+    }
+
+    const scriptPath = OS.Path.join(state.lastExportDir, "run-notebooklm-import.ps1");
+    try {
+      const powershell = this.findPowerShellExecutable();
+      const process = Components.classes["@mozilla.org/process/util;1"]
+        .createInstance(Components.interfaces.nsIProcess);
+      process.init(Zotero.File.pathToFile(powershell));
+      process.runwAsync([
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        scriptPath
+      ], 5, {
+        observe: (subject, topic) => {
+          if (topic === "process-finished") {
+            this.setStatus(win, "NotebookLM CLI script finished.");
+          }
+          else if (topic === "process-failed") {
+            this.setStatus(win, "NotebookLM CLI script failed. Check the package folder log.");
+          }
+        }
+      });
+      this.setStatus(win, "NotebookLM CLI script started.");
+    }
+    catch (error) {
+      Zotero.logError(error);
+      this.setStatus(win, `Could not start CLI script: ${error.message}`);
+      this.renderLines(win, [
+        `Run manually: powershell -NoProfile -ExecutionPolicy Bypass -File "${scriptPath}"`,
+        error.message
+      ]);
+    }
+  }
+
   updateNotebookLMCommand(win) {
     const command = win.document.getElementById(this.sidebarID)?.querySelector("[data-role='cli-command']");
     if (!command) {
@@ -872,6 +920,37 @@ var ZoteroNotebookLMBridgePlugin = class {
 
     const name = state.lastNotebookName || this.guessTitleFromFileName(state.lastExportDir);
     command.textContent = `node .\\helper\\src\\cli.js notebooklm-import --input "${state.lastExportDir}" --name "${name}" --cli nlm`;
+  }
+
+  makeNotebookLMImportScript(outputDir, notebookName) {
+    const escapedDir = outputDir.replace(/'/g, "''");
+    const escapedName = notebookName.replace(/'/g, "''");
+    const escapedRepo = this.getRepositoryRootPath().replace(/'/g, "''");
+    return `$ErrorActionPreference = "Stop"
+$log = Join-Path $PSScriptRoot "notebooklm-import.log"
+Set-Location '${escapedRepo}'
+node .\\helper\\src\\cli.js notebooklm-import --input '${escapedDir}' --name '${escapedName}' --cli nlm *>&1 | Tee-Object -FilePath $log
+`;
+  }
+
+  getRepositoryRootPath() {
+    let path = this.rootURI
+      .replace(/^file:\/+/, "")
+      .replace(/\/zotero-plugin\/?$/, "")
+      .replace(/\//g, "\\");
+
+    try {
+      path = decodeURIComponent(path);
+    }
+    catch (error) {
+    }
+
+    return path;
+  }
+
+  findPowerShellExecutable() {
+    const systemRoot = Services.env.get("SystemRoot") || "C:\\Windows";
+    return OS.Path.join(systemRoot, "System32", "WindowsPowerShell", "v1.0", "powershell.exe");
   }
 
   renderLines(win, lines) {

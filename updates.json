@@ -3,8 +3,8 @@
     "zotero2notebooklm@valeryzhu.github.io": {
       "updates": [
         {
-          "version": "0.1.4",
-          "update_link": "https://github.com/valeryzhu/zotero2notebookLM/releases/download/v0.1.4/zotero-notebooklm-bridge.xpi",
+          "version": "0.1.5",
+          "update_link": "https://github.com/valeryzhu/zotero2notebookLM/releases/download/v0.1.5/zotero-notebooklm-bridge.xpi",
           "applications": {
             "zotero": {
               "strict_min_version": "6.999",

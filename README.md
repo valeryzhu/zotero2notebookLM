@@ -4,12 +4,12 @@
 
 当前不承诺直接调用 NotebookLM 官方 API，因为尚未确认 NotebookLM 提供公开、稳定的批量导入 API。第一版采用更稳的两段式流程：
 
-1. Zotero 插件：在 Zotero 中提供侧边栏入口，扫描当前选中条目或 collection 中的 PDF 和 notes。
-2. 本地 helper：把 PDF 和 note-like 文本文件整理到导入目录，生成 `manifest.json`、`manifest.csv` 和说明文件。后续可接 Playwright 上传器。
+1. Zotero 插件：在 Zotero 中提供侧边栏入口，扫描当前选中条目、collection 或本地目录。
+2. 导入包生成：导出 PDF 和 notes 到 `pdf/`、`notes/`，并生成 `manifest.json`、`manifest.csv` 和 `README.md`。
 
 ## 目录结构
 
-- `zotero-plugin/`：Zotero 9.0.3+ XPI 插件源码，包含侧边栏 UI。
+- `zotero-plugin/`：Zotero 9.0.3+ XPI 插件源码，包含侧边栏 UI 和基础导出功能。
 - `helper/`：本地 Node.js CLI helper，支持 PDF、TXT、Markdown、HTML。
 - `scripts/`：XPI 打包、GitHub 仓库创建等脚本。
 - `docs/`：项目记忆、路线图和开发说明。
@@ -34,19 +34,21 @@ npm run build:xpi
 
 构建结果在 `dist/zotero-notebooklm-bridge.xpi`。开发时可在 Zotero 的 Add-ons 页面中通过 `Install Add-on From File...` 安装该 XPI。
 
+## 插件基础功能
+
+- 打开 Zotero 侧边栏入口 `NotebookLM Bridge`。
+- 来源支持当前选中条目、当前 collection、本地目录。
+- 扫描并导出 PDF 附件。
+- 导出 Zotero notes 为纯文本。
+- 本地目录支持 `.pdf`、`.txt`、`.md`、`.markdown`、`.html`、`.htm`。
+- 输出 NotebookLM 导入包，包含 `pdf/`、`notes/`、`manifest.json`、`manifest.csv`、`README.md`。
+
 ## 账号策略
 
 插件内不输入、不保存 Google 账号或密码。NotebookLM 登录交给浏览器自身登录态或后续的本地 Playwright helper 复用浏览器 profile。
 
-## 当前能力
+## 尚未实现
 
-- Zotero 插件侧边栏入口。
-- 扫描当前 Zotero selection 或 collection 中的 PDF 附件和 Zotero notes 数量。
-- 选择本地目录，并生成 helper 命令。
-- 本地 helper 可扫描 PDF、TXT、Markdown、HTML，并生成 NotebookLM 导入包。
-
-尚未实现：
-
-- Zotero 内部一键导出附件和 notes 到 helper。
-- 元数据提取和去重。
 - NotebookLM 网页自动化上传。
+- DOI/标题/作者的深度元数据提取和去重策略。
+- 直接创建或选择 NotebookLM notebook。

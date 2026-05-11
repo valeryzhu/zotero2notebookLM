@@ -4,7 +4,7 @@
 
 - Node.js 22 或更高版本。
 - PowerShell 5+。
-- Zotero 9。
+- Zotero 7 或更高版本。
 - 可选：GitHub CLI `gh`，用于创建远端仓库。
 
 ## 构建 XPI

@@ -4,7 +4,7 @@
 
 ## 关键目标
 
-- 项目目标是做一个面向 Zotero 9 的 `xpi` 插件和本地 helper，帮助把指定目录中的 PDF 文献整理到 Zotero，并生成 NotebookLM 友好的导入目录。
+- 项目目标是做一个面向 Zotero 7+ / 9 的 `xpi` 插件和本地 helper，帮助把指定目录中的 PDF 文献整理到 Zotero，并生成 NotebookLM 友好的导入目录。
 - NotebookLM 侧暂不假设存在公开稳定 API。第一版以“Zotero 插件 + 导出中间包”为主，后续可加“浏览器自动化上传器”。
 - 需要新建独立 GitHub 仓库；本地目录 `D:\GitHub\codex\02zotero插件开发` 应作为独立 git 仓库管理，不混入外层 `D:\GitHub` 仓库。
 - GitHub 远端仓库为 `https://github.com/valeryzhu/zotero2notebookLM.git`，本地 `main` 已推送到 `origin/main`。
@@ -12,7 +12,7 @@
 
 ## 当前架构决策
 
-- Zotero 插件按 Zotero 9 兼容目标搭建，使用 `manifest.json`、`bootstrap.js` 和 `chrome/content` 资源。
+- Zotero 插件按 Zotero 7+ / 9 兼容目标搭建，使用 `manifest.json`、`bootstrap.js` 和 `chrome/content` 资源。不要把 `strict_max_version` 写死到 `9.0.*`，否则 Zotero 7/8 或 9.1+ 会被直接拒绝安装。
 - helper 使用 Node.js 标准库实现，先不引入依赖，降低安装和打包门槛。
 - helper 输出 `manifest.json`、`manifest.csv`、`README.md`，并复制 PDF 到 `pdf/` 子目录。
 - NotebookLM 网页自动化暂不放进 Zotero 插件进程；后续应通过本地 helper 或独立脚本接 Playwright。

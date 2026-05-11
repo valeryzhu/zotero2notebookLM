@@ -10,8 +10,10 @@
 
 ## v0.2 Zotero 内功能
 
-- [ ] Zotero 菜单中选择本地目录。
+- [ ] Zotero 侧边栏 UI。
+- [ ] 选择当前 collection、当前选中条目或本地目录。
 - [ ] 递归扫描 PDF。
+- [ ] 导出 Zotero notes。
 - [ ] 导入 PDF 到指定 collection。
 - [ ] 调用 Zotero metadata retrieval。
 - [ ] 从 Zotero items 导出 NotebookLM manifest。
@@ -25,7 +27,9 @@
 
 ## v0.4 NotebookLM 自动化
 
+- [ ] 不在插件中保存 Google 密码，仅复用浏览器登录态。
 - [ ] Playwright 登录状态复用。
 - [ ] 打开指定 NotebookLM notebook。
 - [ ] 批量上传 PDF。
+- [ ] 批量上传 Zotero notes 导出的文本文件。
 - [ ] 失败重试和上传结果报告。

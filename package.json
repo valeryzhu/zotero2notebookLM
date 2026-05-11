@@ -1,6 +1,6 @@
 {
   "name": "zotero-notebooklm-bridge",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Zotero 9.0.3 plugin and local helper for preparing papers for NotebookLM import.",
   "type": "module",

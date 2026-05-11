@@ -5,7 +5,7 @@
 - Node.js 22 或更高版本。
 - PowerShell 5+。
 - Zotero 9.0.3 或更高版本。
-- 可选：GitHub CLI `gh`，用于创建远端仓库。
+- 可选：GitHub CLI `gh`，用于创建或管理远端仓库。
 
 ## 构建 XPI
 
@@ -14,6 +14,25 @@ npm run build:xpi
 ```
 
 脚本会把 `zotero-plugin/` 下的内容压缩成 `dist/zotero-notebooklm-bridge.xpi`。
+
+## 安装兼容性
+
+Zotero 9.0.3 本地实测需要 `manifest.json` 中包含：
+
+```json
+{
+  "applications": {
+    "zotero": {
+      "id": "zotero2notebooklm@valeryzhu.github.io",
+      "update_url": "https://raw.githubusercontent.com/valeryzhu/zotero2notebookLM/main/updates.json",
+      "strict_min_version": "6.999",
+      "strict_max_version": "10.*"
+    }
+  }
+}
+```
+
+没有 `update_url` 时，本项目 XPI 在临时 Zotero profile 中不会进入 `extensions.json`，手动安装也会表现为“不兼容/无法安装”。加入 `update_url` 后，同一插件包可被 Zotero 识别。
 
 ## Helper CLI
 
@@ -24,7 +43,7 @@ node .\helper\src\cli.js prepare --input .\samples\input --output .\outputs\note
 当前支持的输入文件：
 
 - PDF: `.pdf`
-- 笔记文本: `.txt`
+- 文本笔记: `.txt`
 - Markdown: `.md`, `.markdown`
 - HTML: `.html`, `.htm`，会转成纯文本
 
@@ -38,20 +57,3 @@ outputs/notebooklm-import/
   pdf/
   notes/
 ```
-
-## GitHub 仓库
-
-本机需要先安装 GitHub CLI：
-
-```powershell
-winget install --id GitHub.cli
-gh auth login
-```
-
-然后运行：
-
-```powershell
-npm run github:init
-```
-
-如果仓库还没有首个 commit，该脚本会提交当前项目骨架后再创建远端并推送。

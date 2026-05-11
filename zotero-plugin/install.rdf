@@ -7,11 +7,12 @@
         RDF:about="urn:mozilla:install-manifest"
         em:id="zotero2notebooklm@valeryzhu.github.io"
         em:name="Zotero NotebookLM Bridge"
-        em:version="0.1.1"
+        em:version="0.1.2"
         em:type="2"
         em:creator="Valery Zhu"
         em:description="Prepare Zotero papers for NotebookLM import."
         em:homepageURL="https://github.com/valeryzhu/zotero2notebookLM"
+        em:updateURL="https://raw.githubusercontent.com/valeryzhu/zotero2notebookLM/main/updates.json"
         em:iconURL="chrome://zotero2notebooklm/content/icons/icon.svg"
         em:multiprocessCompatible="true"
         em:bootstrap="true">
@@ -26,7 +27,7 @@
             <Description>
                 <em:id>zotero@zotero.org</em:id>
                 <em:minVersion>6.999</em:minVersion>
-                <em:maxVersion>9.*</em:maxVersion>
+                <em:maxVersion>10.*</em:maxVersion>
             </Description>
         </em:targetApplication>
         <em:targetApplication>

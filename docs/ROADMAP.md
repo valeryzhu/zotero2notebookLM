@@ -13,7 +13,8 @@
 - [x] Zotero 侧边栏 UI。
 - [x] 扫描当前 collection 或当前选中条目的 PDF/notes 数量。
 - [x] 选择本地目录并生成 helper 命令。
-- [ ] 递归扫描 PDF。
+- [x] 修复 Zotero 9.0.3 安装兼容性。
+- [ ] 从 Zotero 条目递归导出 PDF。
 - [ ] 导出 Zotero notes。
 - [ ] 导入 PDF 到指定 collection。
 - [ ] 调用 Zotero metadata retrieval。

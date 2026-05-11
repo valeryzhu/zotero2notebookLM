@@ -59,7 +59,9 @@ async function main() {
   }
 
   const result = await prepareImportPackage(options);
-  console.log(`Found ${result.totalPdfCount} PDF file(s).`);
+  console.log(`Found ${result.totalSourceCount} source file(s).`);
+  console.log(`PDF files: ${result.totalPdfCount}`);
+  console.log(`Note files: ${result.totalNoteCount}`);
   console.log(`Prepared ${result.preparedCount} file(s).`);
   console.log(`Output: ${result.outputDir}`);
 }

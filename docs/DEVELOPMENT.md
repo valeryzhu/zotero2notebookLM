@@ -18,8 +18,15 @@ npm run build:xpi
 ## Helper CLI
 
 ```powershell
-npm run helper -- prepare --input .\samples\input --output .\outputs\notebooklm-import
+node .\helper\src\cli.js prepare --input .\samples\input --output .\outputs\notebooklm-import
 ```
+
+当前支持的输入文件：
+
+- PDF: `.pdf`
+- 笔记文本: `.txt`
+- Markdown: `.md`, `.markdown`
+- HTML: `.html`, `.htm`，会转成纯文本
 
 输出目录结构：
 
@@ -29,6 +36,7 @@ outputs/notebooklm-import/
   manifest.csv
   manifest.json
   pdf/
+  notes/
 ```
 
 ## GitHub 仓库

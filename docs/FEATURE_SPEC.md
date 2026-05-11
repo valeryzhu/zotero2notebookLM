@@ -33,11 +33,12 @@
 
 ## v1 必做功能
 
-- Zotero 侧边栏 UI。
-- 选择 Zotero collection 或本地目录。
-- 递归扫描 PDF。
+- Zotero 侧边栏 UI。已完成基础入口。
+- 选择 Zotero collection 或本地目录。已完成基础入口和扫描计数。
+- 递归扫描 PDF。helper 已完成。
+- 扫描 note-like 文件：`.txt`、`.md`、`.markdown`、`.html`、`.htm`。helper 已完成。
 - 导出 Zotero notes 为 Markdown 或纯文本。
-- 生成 NotebookLM 导入包：
+- 生成 NotebookLM 导入包。helper 已完成基础版：
   - `pdf/`
   - `notes/`
   - `manifest.json`

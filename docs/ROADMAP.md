@@ -10,8 +10,9 @@
 
 ## v0.2 Zotero 内功能
 
-- [ ] Zotero 侧边栏 UI。
-- [ ] 选择当前 collection、当前选中条目或本地目录。
+- [x] Zotero 侧边栏 UI。
+- [x] 扫描当前 collection 或当前选中条目的 PDF/notes 数量。
+- [x] 选择本地目录并生成 helper 命令。
 - [ ] 递归扫描 PDF。
 - [ ] 导出 Zotero notes。
 - [ ] 导入 PDF 到指定 collection。
@@ -20,6 +21,9 @@
 
 ## v0.3 Helper 增强
 
+- [x] 递归扫描 PDF。
+- [x] 扫描 TXT、Markdown、HTML 笔记文件。
+- [x] 生成 `pdf/`、`notes/`、`manifest.json`、`manifest.csv` 和 README。
 - [ ] 文件名规范化策略可配置。
 - [ ] DOI/标题/作者元数据提取。
 - [ ] 跳过重复 PDF。
